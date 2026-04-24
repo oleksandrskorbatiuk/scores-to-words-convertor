@@ -77,7 +77,7 @@ function normalizeFraction(frac) {
 	return frac.replace(/0+$/, '') || "0";
 }
 
-function convertLine(line, thousandsMode) {
+function convertLine(line, inputFormat, outputFracFormat) {
 	if (!line.trim()) return "";
 
 	line = line.trim().replace(',', '.');
@@ -85,14 +85,19 @@ function convertLine(line, thousandsMode) {
 	let intPart = 0;
 	let fracPart = "";
 
-	if (thousandsMode) {
-		let num = parseInt(line, 10);
-		intPart = Math.floor(num / 1000);
-		fracPart = String(num % 1000).padStart(3, '0');
-	} else {
-		let parts = line.split('.');
-		intPart = parseInt(parts[0], 10) || 0;
-		fracPart = parts[1] || "";
+	switch (inputFormat) {
+		case "thousands":
+			let num = parseInt(line, 10);
+			intPart = Math.floor(num / 1000);
+			fracPart = String(num % 1000).padStart(3, '0');
+			break
+		case "fraction":
+			let parts = line.split('.');
+			intPart = parseInt(parts[0], 10) || 0;
+			fracPart = parts[1] || "";
+			break
+		default:
+			return "Invalid input format"
 	}
 
 	if (intPart > 200) return "Число поза діапазоном";
@@ -100,24 +105,44 @@ function convertLine(line, thousandsMode) {
 	let intWords = numberToWords(intPart, "f");
 	let intLbl = integerLabel(intPart);
 
-	if (!fracPart || Number(fracPart) === 0) {
-		return `${intWords} ${intLbl} і нуль десятих`;
-	}
+
 
 	let norm = normalizeFraction(fracPart);
 	let fracNum = parseInt(norm, 10);
 
 	let fracWords = numberToWords(fracNum, "f");
-	let fracLbl = fractionLabel(fracNum, norm.length);
+
+	let fracDidgitsNum;
+	switch (outputFracFormat) {
+		case "free":
+			fracDidgitsNum = norm.length
+			break
+		case "forceThousands":
+			fracDidgitsNum = 3
+			break
+		default:
+			return "Invalid frac format"
+	}
+    
+
+	let fracLbl = fractionLabel(fracNum, fracDidgitsNum);
 
 	return `${intWords} ${intLbl} і ${fracWords} ${fracLbl}`;
 }
 
 function convert() {
 	const lines = document.getElementById("input").value.split("\n");
-	const thousandsMode = document.getElementById("thousandsMode").checked;
+	const inputIsThousands = document.getElementById("inputIsThousands").checked;
+	const outputFracIsThousands = document.getElementById("outputFracIsThousands").checked;
 
-	const result = lines.map(line => convertLine(line, thousandsMode));
+	const inputFormat = inputIsThousands ? "thousands" : "fraction"
+	const outputFracFormat = outputFracIsThousands ? "forceThousands" : "free"
+
+	const result = lines.map(line => convertLine(
+		line,
+		inputFormat,
+		outputFracFormat
+	));
 
 	document.getElementById("output").value = result.join("\n");
 }
