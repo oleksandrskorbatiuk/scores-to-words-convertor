@@ -27,8 +27,8 @@ body {
 	flex-direction: column;
 }
 
-input {
-    margin: 20px 0;
+.settingsPanel > div {
+	padding: 5px 0;
 }
 
 .textareaPanel {
