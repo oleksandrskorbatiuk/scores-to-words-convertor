@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Конвертер чисел в слова</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<main class="container">
+
+		<h2>Конвертер чисел (0-200)</h2>
+
+		<div class="settingsPanel">
+			<div>
+				<label>
+					<input type="checkbox" id="thousandsMode">
+					Вхідні дані у тисячних
+				</label>
+			</div>
+			<div>
+				<button onclick="convert()">Конвертувати</button>
+				<button onclick="copyToClipboard()">Копіювати результат</button>
+			</div>
+
+		</div>
+		<div class="textareaPanel">
+			<div class="textareaGroup">
+				<h3>Вхідні дані:</h3>
+				<textarea id="input"></textarea>
+			</div>
+
+			<div class="textareaGroup">
+				<h3>Результат:</h3>
+				<textarea id="output" readonly></textarea>
+			</div>
+		</div>
+
+	</main>
+	<script src="script.js"> <p> Enable JS </p> </script>
+
+</body>
+
+</html>
